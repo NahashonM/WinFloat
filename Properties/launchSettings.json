@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WinFloat (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WinFloat (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

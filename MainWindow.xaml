@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="WinFloat.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinFloat"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid Background="{ThemeResource LayerFillColorDefaultBrush}" Margin="0">
+
+        <!-- Top toolbar -->
+        <Grid x:Name="AppTitleBar" Height="36" VerticalAlignment="Top" Margin="0,0,0,0">
+            <StackPanel
+                    Height="32"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="8,2,0,0"
+                    Spacing="4">
+
+                <Button
+                        Click="AppSettingsButton_Click"
+                        x:Name="AppSettingsButton"
+                        Width="40"
+                        Height="40"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        ToolTipService.ToolTip="Settings">
+                    <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Glyph="&#xE713;"
+                            FontSize="16"/>
+                </Button>
+
+                <Button
+                        Click="AppPinButton_Click"
+                        x:Name="AppPinButton"
+                        Width="40"
+                        Height="40"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        ToolTipService.ToolTip="Cursor Mode">
+                    <FontIcon
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Glyph="&#xE962;"
+                            FontSize="16"/>
+                </Button>
+            </StackPanel>
+
+            <!-- Window controls -->
+            <StackPanel
+                        Height="32"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,2,8,0"
+                        Spacing="4">
+
+                <Button
+                            Click="AppMinimizeButton_Click"
+                            x:Name="AppMinimizeButton"
+                            Width="40"
+                            Height="40"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="6"
+                            ToolTipService.ToolTip="Minimize">
+                    <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Glyph="&#xE949;"
+                                FontSize="16"/>
+                </Button>
+
+                <Button
+                            Click="AppCloseButton_Click"
+                            x:Name="AppCloseButton"
+                            Width="40"
+                            Height="40"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="6"
+                            ToolTipService.ToolTip="Close">
+                    <FontIcon
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Glyph="&#xE711;"
+                                FontSize="16"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Center content -->
+        <StackPanel 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="20">
+
+            <!-- Crosshair canvas -->
+            <Canvas x:Name="AppCrosshairButton" Width="80" Height="80" HorizontalAlignment="Center" Margin="0,24,0,24">
+
+                <!-- Outer glow circle -->
+                <Ellipse Width="80" Height="80" Canvas.Left="0" Canvas.Top="0">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#40A78BFA" Offset="0"/>
+                            <GradientStop Color="#10A78BFA" Offset="0.7"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+
+                <!-- Outer circle -->
+                <Ellipse Width="80" Height="80" Canvas.Left="0" Canvas.Top="0" Stroke="#A78BFA" StrokeThickness="2" Opacity="0.6"/>
+
+                <!-- Inner circle -->
+                <Ellipse Width="16" Height="16" Canvas.Left="32" Canvas.Top="32" Fill="#A78BFA" Opacity="0.8"/>
+
+                <!-- Top line -->
+                <Rectangle Width="2" Height="25" Canvas.Left="39" Canvas.Top="-10" Fill="#A78BFA" RadiusX="1" RadiusY="1"/>
+
+                <!-- Bottom line -->
+                <Rectangle Width="2" Height="25" Canvas.Left="39" Canvas.Top="65" Fill="#A78BFA" RadiusX="1" RadiusY="1"/>
+
+                <!-- Left line -->
+                <Rectangle Width="25" Height="2" Canvas.Left="-10" Canvas.Top="39" Fill="#A78BFA" RadiusX="1" RadiusY="1"/>
+
+                <!-- Right line -->
+                <Rectangle Width="25" Height="2" Canvas.Left="65" Canvas.Top="39" Fill="#A78BFA" RadiusX="1" RadiusY="1"/>
+            </Canvas>
+
+            
+            <!-- Instructions -->
+            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                <TextBlock
+                            Text="Drag crosshair"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+                <TextBlock
+                            Text="Release on target window"
+                            FontSize="14"
+                            HorizontalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+
+            <!-- ESC hint -->
+            <TextBlock FontSize="12" HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="Press ESC to cancel"/>
+
+        </StackPanel>
+    </Grid>
+
+</Window>
