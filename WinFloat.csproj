@@ -11,6 +11,15 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="CrossHair.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="CrossHair.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="CrossHair.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />

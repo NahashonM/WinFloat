@@ -103,7 +103,11 @@
                     Spacing="20">
 
             <!-- Crosshair canvas -->
-            <Canvas x:Name="AppCrosshairButton" Width="80" Height="80" HorizontalAlignment="Center" Margin="0,24,0,24">
+            <Canvas 
+                    x:Name="AppCrossHairContainer"
+                    Width="80" Height="80" 
+                    HorizontalAlignment="Center" 
+                    Margin="0,24,0,24">
 
                 <!-- Outer glow circle -->
                 <Ellipse Width="80" Height="80" Canvas.Left="0" Canvas.Top="0">
@@ -115,7 +119,7 @@
                         </RadialGradientBrush>
                     </Ellipse.Fill>
                 </Ellipse>
-
+                
                 <!-- Outer circle -->
                 <Ellipse Width="80" Height="80" Canvas.Left="0" Canvas.Top="0" Stroke="#A78BFA" StrokeThickness="2" Opacity="0.6"/>
 
@@ -133,9 +137,10 @@
 
                 <!-- Right line -->
                 <Rectangle Width="25" Height="2" Canvas.Left="65" Canvas.Top="39" Fill="#A78BFA" RadiusX="1" RadiusY="1"/>
+                
+                <local:CrossHairButton x:Name="AppCrossHairButton" CornerRadius="100" Width="80" Height="80"/>
             </Canvas>
 
-            
             <!-- Instructions -->
             <StackPanel Spacing="8" HorizontalAlignment="Center">
                 <TextBlock
@@ -151,7 +156,6 @@
                             HorizontalAlignment="Center"
                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
-
 
             <!-- ESC hint -->
             <TextBlock FontSize="12" HorizontalAlignment="Center" Foreground="{ThemeResource TextFillColorTertiaryBrush}" Text="Press ESC to cancel"/>

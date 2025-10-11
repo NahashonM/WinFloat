@@ -2,28 +2,13 @@ using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics;
-
-//using Windows.UI.WindowManagement;
 using WinRT.Interop;
 
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace WinFloat
 {
@@ -32,9 +17,8 @@ namespace WinFloat
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        private IntPtr hWnd;
-        private WindowId windowId;
         private AppWindow appWindow;
+
 
         public MainWindow()
         {
@@ -57,6 +41,12 @@ namespace WinFloat
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
+
+            AppCrossHairButton.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler(AppCrossHairButton_PointerPressed), handledEventsToo: true);
+            AppCrossHairButton.AddHandler(UIElement.PointerReleasedEvent,new PointerEventHandler(AppCrossHairButton_PointerReleased), handledEventsToo: true);
+
+            Win32Hook.RegisterWin32Hook();
+            Win32Hook.OnEscapeKeyPressed = CancelWindowSelection;
         }
 
 
@@ -95,11 +85,11 @@ namespace WinFloat
             var minimizeBtnRect = GetElementBounds(AppMinimizeButton);
             var closeBtnRect = GetElementBounds(AppCloseButton);
 
-            var rectArray = new Windows.Graphics.RectInt32[] { 
+            var rectArray = new Windows.Graphics.RectInt32[] {
                 new RectInt32((int)settingsBtnRect.X, (int)settingsBtnRect.Y, (int)settingsBtnRect.Width, (int)settingsBtnRect.Height ) ,
                 new RectInt32((int)pinBtnRect.X, (int)pinBtnRect.Y, (int)pinBtnRect.Width, (int)pinBtnRect.Height ) ,
                 new RectInt32((int)minimizeBtnRect.X, (int)minimizeBtnRect.Y, (int)minimizeBtnRect.Width, (int)minimizeBtnRect.Height ) ,
-                new RectInt32((int)closeBtnRect.X, (int)closeBtnRect.Y, (int)closeBtnRect.Width, (int)closeBtnRect.Height ) 
+                new RectInt32((int)closeBtnRect.X, (int)closeBtnRect.Y, (int)closeBtnRect.Width, (int)closeBtnRect.Height )
             };
 
             InputNonClientPointerSource nonClientInputSrc =
@@ -111,18 +101,13 @@ namespace WinFloat
 
         private void AppSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            
-
         }
 
         private void AppPinButton_Click(object sender, RoutedEventArgs e)
         {
             if (appWindow.Presenter is OverlappedPresenter presenter)
-            {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 presenter.Minimize();
-            }
         }
-
 
         private void AppMinimizeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -134,5 +119,29 @@ namespace WinFloat
         {
             this.Close();
         }
+
+
+        private void AppCrossHairButton_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            StartWindowSelection();
+        }
+
+        private void AppCrossHairButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            CancelWindowSelection();
+        }
+
+        private void StartWindowSelection()
+        {
+            Win32Cursor.SetGlobalCrossCursor();
+
+        }
+
+        private void CancelWindowSelection()
+        {
+            Win32Cursor.RestoreGlobalCursor();
+        }
+
     }
 }
+
