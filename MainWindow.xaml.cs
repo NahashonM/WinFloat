@@ -4,6 +4,8 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -12,13 +14,10 @@ using WinRT.Interop;
 
 namespace WinFloat
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
         private AppWindow appWindow;
-
+        
 
         public MainWindow()
         {
@@ -45,8 +44,17 @@ namespace WinFloat
             AppCrossHairButton.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler(AppCrossHairButton_PointerPressed), handledEventsToo: true);
             AppCrossHairButton.AddHandler(UIElement.PointerReleasedEvent,new PointerEventHandler(AppCrossHairButton_PointerReleased), handledEventsToo: true);
 
-            Win32Hook.RegisterWin32Hook();
-            Win32Hook.OnEscapeKeyPressed = CancelWindowSelection;
+            Win32MsgHook.RegisterWin32Hook();
+
+
+            RegisterShortcuts();
+        }
+
+
+        private void RegisterShortcuts()
+        {
+            KBShortcut escape = new KBShortcut(false, false, false,false, Windows.System.VirtualKey.Escape, CancelWindowSelection);
+            Win32MsgHook.AddShortcut(escape);
         }
 
 
@@ -128,13 +136,14 @@ namespace WinFloat
 
         private void AppCrossHairButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            if (!Win32Cursor.isCrossHairActive) return;
             CancelWindowSelection();
         }
+
 
         private void StartWindowSelection()
         {
             Win32Cursor.SetGlobalCrossCursor();
-
         }
 
         private void CancelWindowSelection()
