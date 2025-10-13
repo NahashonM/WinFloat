@@ -33,11 +33,27 @@ namespace WinFloat
         [DllImport("user32.dll", ExactSpelling = true)]
         private static extern IntPtr GetAncestor(IntPtr hwnd, GetAncestorFlags gaFlags);
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+
+        // Window handles
+        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private static readonly IntPtr HWND_TOP = new IntPtr(0);
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+
+        // SetWindowPos flags
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
+
+
 
         /// <summary>
         /// Get window at the cursor posision
         /// </summary>
-        /// <returns></returns>
+        /// <returns>IntPtr: handle of the window at the cursor position</returns>
         public static IntPtr GetWindowUnderCursor()
         {
             POINT cursorPoint;
@@ -56,10 +72,26 @@ namespace WinFloat
         /// <summary>
         /// Get Foreground window
         /// </summary>
-        /// <returns></returns>
+        /// <returns>IntPtr: handle of the foreground window</returns>
         public static IntPtr GetActiveWindow()
         {
             return GetForegroundWindow();
+        }
+
+        /// <summary>
+        /// Make a window the top most window.
+        /// </summary>
+        /// <param name="hwnd">IntPtr: Handle of the target window</param>
+        /// <returns></returns>
+        public static bool MakeWindowTopMost(IntPtr hwnd)
+        {
+            return SetWindowPos(hwnd, HWND_TOPMOST, 0,0, 0,0, SWP_NOSIZE | SWP_NOMOVE);
+        }
+
+
+        public static bool MakeWindowNonTopMost(IntPtr hwnd)
+        {
+            return SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
         }
 
     }

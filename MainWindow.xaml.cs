@@ -54,16 +54,17 @@ namespace WinFloat
         private void RegisterShortcuts()
         {
             // stop mouse drag operation
-            KBShortcut escape = new KBShortcut(false, false, false,false, Windows.System.VirtualKey.Escape, CancelWindowSelection);
+            KBShortcut escape = new KBShortcut(false, false, false,false, Windows.System.VirtualKey.Escape, Shortcut_CancelWindowSelection);
 
             // pin currenlty active window
-            KBShortcut pin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.P, StartWindowSelection);   
+            KBShortcut pin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.P, Shortcut_PinForegroundWindow);   
             
             // unpin currenlty pinned window
-            KBShortcut unpin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.U, CancelWindowSelection);
+            KBShortcut unpin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.U, Shortcut_UnPinForegroundWindow);
 
             Win32MsgHook.AddShortcut(escape);
             Win32MsgHook.AddShortcut(pin);
+            Win32MsgHook.AddShortcut(unpin);
         }
 
 
@@ -140,33 +141,34 @@ namespace WinFloat
 
         private void AppCrossHairButton_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            StartWindowSelection();
-        }
-
-        private void AppCrossHairButton_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            SelectWindow();
-            CancelWindowSelection();
-        }
-
-        private void SelectWindow()
-        {
-            IntPtr hwnd = Win32Window.GetWindowUnderCursor();
-            Debug.WriteLine($"hwnd: 0x{hwnd:X}  {hwnd}");
-        }
-
-
-        private void StartWindowSelection()
-        {
-
-            IntPtr hwnd = Win32Window.GetActiveWindow();
-            Debug.WriteLine($"hwnd: 0x{hwnd:X}  {hwnd}");
-
             if (Win32Cursor.isCrossHairActive) return;
             Win32Cursor.SetGlobalCrossCursor();
         }
 
-        private void CancelWindowSelection()
+        private void AppCrossHairButton_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!Win32Cursor.isCrossHairActive) return;
+            Win32Cursor.RestoreGlobalCursor();
+
+            IntPtr hwnd = Win32Window.GetWindowUnderCursor();
+            Win32Window.MakeWindowTopMost(hwnd);
+        }
+
+
+        private void Shortcut_PinForegroundWindow()
+        {
+            IntPtr hwnd = Win32Window.GetActiveWindow();
+            Win32Window.MakeWindowTopMost(hwnd);
+
+        }
+
+        private void Shortcut_UnPinForegroundWindow()
+        {
+            IntPtr hwnd = Win32Window.GetActiveWindow();
+            Win32Window.MakeWindowNonTopMost(hwnd);
+        }
+
+        private void Shortcut_CancelWindowSelection()
         {
             if (!Win32Cursor.isCrossHairActive) return;
             Win32Cursor.RestoreGlobalCursor();
