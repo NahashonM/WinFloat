@@ -7,6 +7,7 @@ namespace WinFloat
 {
     public static class Win32Cursor
     {
+        
         [DllImport("user32.dll")]
         private static extern IntPtr SetCursor(IntPtr hCursor);
 
@@ -59,7 +60,6 @@ namespace WinFloat
                 Debug.WriteLine($"Error setting global cursor: {ex.Message}");
             }
         }
-
 
 
         public static void RestoreGlobalCursor()

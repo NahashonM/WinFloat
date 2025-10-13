@@ -53,8 +53,17 @@ namespace WinFloat
 
         private void RegisterShortcuts()
         {
+            // stop mouse drag operation
             KBShortcut escape = new KBShortcut(false, false, false,false, Windows.System.VirtualKey.Escape, CancelWindowSelection);
+
+            // pin currenlty active window
+            KBShortcut pin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.P, StartWindowSelection);   
+            
+            // unpin currenlty pinned window
+            KBShortcut unpin = new KBShortcut(false, true, false, true, Windows.System.VirtualKey.U, CancelWindowSelection);
+
             Win32MsgHook.AddShortcut(escape);
+            Win32MsgHook.AddShortcut(pin);
         }
 
 
@@ -136,18 +145,30 @@ namespace WinFloat
 
         private void AppCrossHairButton_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            if (!Win32Cursor.isCrossHairActive) return;
+            SelectWindow();
             CancelWindowSelection();
+        }
+
+        private void SelectWindow()
+        {
+            IntPtr hwnd = Win32Window.GetWindowUnderCursor();
+            Debug.WriteLine($"hwnd: 0x{hwnd:X}  {hwnd}");
         }
 
 
         private void StartWindowSelection()
         {
+
+            IntPtr hwnd = Win32Window.GetActiveWindow();
+            Debug.WriteLine($"hwnd: 0x{hwnd:X}  {hwnd}");
+
+            if (Win32Cursor.isCrossHairActive) return;
             Win32Cursor.SetGlobalCrossCursor();
         }
 
         private void CancelWindowSelection()
         {
+            if (!Win32Cursor.isCrossHairActive) return;
             Win32Cursor.RestoreGlobalCursor();
         }
 
