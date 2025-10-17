@@ -2,7 +2,9 @@ using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -17,7 +19,23 @@ namespace WinFloat
     public sealed partial class MainWindow : Window
     {
         private AppWindow appWindow;
-        
+        private bool      isPinned = false;
+
+        private FontIcon pinIcon = new FontIcon
+            {
+                Glyph = "\uE718",
+                FontSize = 16,
+                FontFamily = (FontFamily)Application.Current.Resources["SymbolThemeFontFamily"]
+            };
+
+        private FontIcon unPinIcon = new FontIcon
+            {
+                Glyph = "\uE77A",
+                FontSize = 16,
+                FontFamily = (FontFamily)Application.Current.Resources["SymbolThemeFontFamily"]
+            };
+
+
 
         public MainWindow()
         {
@@ -123,8 +141,22 @@ namespace WinFloat
 
         private void AppPinButton_Click(object sender, RoutedEventArgs e)
         {
-            if (appWindow.Presenter is OverlappedPresenter presenter)
-                presenter.Minimize();
+            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            if (isPinned)
+            {
+                Win32Window.MakeWindowNonTopMost(hwnd);
+                AppPinButton.Content = pinIcon;
+                ToolTipService.SetToolTip(AppPinButton, "Pin");
+            }
+            else
+            {
+                Win32Window.MakeWindowTopMost(hwnd);
+                AppPinButton.Content = unPinIcon;
+                ToolTipService.SetToolTip(AppPinButton, "Unpin");
+            }
+            
+            isPinned = !isPinned;
         }
 
         private void AppMinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -154,7 +186,7 @@ namespace WinFloat
             Win32Window.MakeWindowTopMost(hwnd);
         }
 
-
+          
         private void Shortcut_PinForegroundWindow()
         {
             IntPtr hwnd = Win32Window.GetActiveWindow();
@@ -173,6 +205,7 @@ namespace WinFloat
             if (!Win32Cursor.isCrossHairActive) return;
             Win32Cursor.RestoreGlobalCursor();
         }
+
 
     }
 }
