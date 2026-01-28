@@ -1,0 +1,13 @@
+﻿# Visual Studio 2022 folder
+.vs/
+
+# Build output and intermediate folders
+bin/
+obj/
+
+# User-specific project settings
+*.csproj.user
+
+# Extension-specific ignore
+*.suo
+*.user
