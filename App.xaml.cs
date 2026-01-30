@@ -16,12 +16,13 @@ namespace WinFloat
         public static string WakeUpMsg = "WinFloatWakeUp";
 
         private static Mutex? instanceMutex = null;
-        private static string globalMutexName = $"Local\\{Assembly.GetExecutingAssembly().GetName().Name}_2025_12_00";
+        private static string localMutexName = $"Local\\{Assembly.GetExecutingAssembly().GetName().Name}_2025_12_00";
+        private static bool   ownsMutex = false;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            instanceMutex = new Mutex(true, globalMutexName, out bool isNewAppInstance);
-            if (isNewAppInstance )
+            instanceMutex = new Mutex(true, localMutexName, out ownsMutex);
+            if (ownsMutex)
             {
                 base.OnStartup(e);
                 return;
@@ -36,7 +37,14 @@ namespace WinFloat
         {
             if(instanceMutex != null)
             {
-                instanceMutex.ReleaseMutex();
+                if (ownsMutex)
+                {
+                    try
+                    {
+                        instanceMutex.ReleaseMutex();
+                    }
+                    catch (Exception ex) {}
+                }
                 instanceMutex.Dispose();
             }
 
@@ -44,4 +52,3 @@ namespace WinFloat
         }
     }
 }
-//MessageBox.Show("The application is already running.", "Instance Check");
