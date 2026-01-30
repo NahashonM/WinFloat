@@ -204,6 +204,7 @@ namespace WinFloat
 
         public static bool MakeWindowTopMost(IntPtr hwnd)
         {
+            SetForegroundWindow(hwnd);
             return SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
         }
 
@@ -315,6 +316,10 @@ namespace WinFloat
         private static extern IntPtr WindowFromPoint(POINT Point);
 
         [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", ExactSpelling = true)]
@@ -323,6 +328,7 @@ namespace WinFloat
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        
 
         //-----------
         [DllImport("user32.dll")]
